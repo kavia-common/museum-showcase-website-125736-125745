@@ -1,13 +1,296 @@
+/*
+  Global Styles (index.css)
+  - Brand tokens and theme variables
+  - System-aware light/dark themes with attribute overrides
+  - Base reset, typography, utilities, layout helpers, and buttons
+  - Accessibility: focus-visible, reduced motion, color-scheme
+*/
+
+/* 1) Brand tokens (fixed) */
+:root {
+  --color-primary: #ff6600;  /* museum brand orange */
+  --color-secondary: #121212;/* deep charcoal */
+  --color-accent: #c49736;   /* refined gold */
+
+  /* Layout tokens */
+  --container-max: 1200px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.06), 0 1px 1px rgba(0,0,0,.05);
+  --shadow-md: 0 8px 20px rgba(0,0,0,.10), 0 3px 6px rgba(0,0,0,.05);
+  --shadow-lg: 0 20px 35px rgba(0,0,0,.18), 0 8px 14px rgba(0,0,0,.08);
+
+  /* Spacing scale */
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+
+  /* Light theme default (can be overridden by system or [data-theme]) */
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --elevated: #ffffff;
+  --text: #1c1c1e;
+  --text-muted: #565c66;
+  --border: rgba(0,0,0,.12);
+  --link: var(--color-primary);
+  --link-hover: #e05500;
+  --navbar-bg: rgba(255,255,255,.85);
+  --focus-ring: color-mix(in oklab, var(--color-primary) 35%, transparent);
+
+  color-scheme: light;
+}
+
+/* 2) System dark mode defaults (used when no explicit [data-theme] override) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f10;
+    --surface: #141416;
+    --elevated: #1a1b1e;
+    --text: #f2f2f3;
+    --text-muted: #b3b7bf;
+    --border: rgba(255,255,255,.12);
+    --link: #ff7a26;
+    --link-hover: #ffa366;
+    --navbar-bg: rgba(18,18,18,.7);
+    --focus-ring: color-mix(in oklab, var(--color-primary) 45%, transparent);
+
+    color-scheme: dark;
+  }
+}
+
+/* 3) Explicit overrides via toggle attribute */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --elevated: #ffffff;
+  --text: #1c1c1e;
+  --text-muted: #565c66;
+  --border: rgba(0,0,0,.12);
+  --link: var(--color-primary);
+  --link-hover: #e05500;
+  --navbar-bg: rgba(255,255,255,.85);
+  --focus-ring: color-mix(in oklab, var(--color-primary) 35%, transparent);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0f0f10;
+  --surface: #141416;
+  --elevated: #1a1b1e;
+  --text: #f2f2f3;
+  --text-muted: #b3b7bf;
+  --border: rgba(255,255,255,.12);
+  --link: #ff7a26;
+  --link-hover: #ffa366;
+  --navbar-bg: rgba(18,18,18,.7);
+  --focus-ring: color-mix(in oklab, var(--color-primary) 45%, transparent);
+
+  color-scheme: dark;
+}
+
+/* 4) Base reset and sensible defaults */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  line-height: 1.6;
+  hanging-punctuation: first last;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Typography scale */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  margin: 0 0 .5em;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+}
+h1 { font-size: clamp(2rem, 4.5vw, 3rem); }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.25rem); }
+h3 { font-size: clamp(1.35rem, 2.5vw, 1.75rem); }
+h4 { font-size: clamp(1.15rem, 2vw, 1.35rem); }
+h5 { font-size: 1rem; }
+h6 { font-size: .95rem; letter-spacing: .02em; }
+
+p { margin: 0 0 1em; }
+small, .text-small { font-size: .875rem; }
+.lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--text-muted); }
+
+/* Links */
+a {
+  color: var(--link);
+  text-underline-offset: .2em;
+  text-decoration-thickness: .08em;
+}
+a:hover { color: var(--link-hover); }
+
+/* Code font (compat with CRA) */
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: color-mix(in oklab, var(--color-secondary) 6%, transparent);
+  padding: .15rem .35rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: max(2px, .2rem);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* 5) Layout helpers and utilities */
+.container {
+  width: min(100% - 2rem, var(--container-max));
+  margin-inline: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.stack > * + * { margin-top: var(--space-3); }
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* Spacing utilities (compact set) */
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: var(--space-1) !important; }
+.mt-2 { margin-top: var(--space-2) !important; }
+.mt-3 { margin-top: var(--space-3) !important; }
+.mt-4 { margin-top: var(--space-4) !important; }
+.mt-5 { margin-top: var(--space-5) !important; }
+.mt-6 { margin-top: var(--space-6) !important; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-1 { margin-bottom: var(--space-1) !important; }
+.mb-2 { margin-bottom: var(--space-2) !important; }
+.mb-3 { margin-bottom: var(--space-3) !important; }
+.mb-4 { margin-bottom: var(--space-4) !important; }
+.mb-5 { margin-bottom: var(--space-5) !important; }
+.mb-6 { margin-bottom: var(--space-6) !important; }
+
+.pt-0 { padding-top: 0 !important; }
+.pt-3 { padding-top: var(--space-3) !important; }
+.pb-3 { padding-bottom: var(--space-3) !important; }
+.p-3  { padding: var(--space-3) !important; }
+.p-4  { padding: var(--space-4) !important; }
+
+/* Text utilities */
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.text-muted { color: var(--text-muted) !important; }
+.bold { font-weight: 800 !important; }
+
+/* Visibility / A11y */
+.visually-hidden,
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Buttons */
+.btn {
+  --_bg: var(--elevated);
+  --_fg: var(--text);
+  --_bd: var(--border);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+
+  padding: .65rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--_bd);
+  background: var(--_bg);
+  color: var(--_fg);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+
+  box-shadow: var(--shadow-sm);
+  transition: transform .15s ease, box-shadow .15s ease, background-color .2s ease, color .2s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  --_bg: var(--color-primary);
+  --_fg: #fff;
+  --_bd: color-mix(in oklab, var(--color-primary) 80%, #000);
+}
+.btn--accent {
+  --_bg: var(--color-accent);
+  --_fg: #121212;
+  --_bd: color-mix(in oklab, var(--color-accent) 60%, #000);
+}
+.btn--outline {
+  --_bg: transparent;
+  --_fg: var(--text);
+  --_bd: var(--border);
+}
+.btn--ghost {
+  --_bg: color-mix(in oklab, var(--color-primary) 10%, transparent);
+  --_fg: var(--text);
+  --_bd: color-mix(in oklab, var(--color-primary) 25%, transparent);
+}
+
+.btn--lg { padding: .85rem 1.15rem; border-radius: var(--radius-lg); }
+.btn--sm { padding: .45rem .7rem; border-radius: var(--radius-sm); font-weight: 700; }
+
+/* Media queries helpers */
+@media (min-width: 1200px) {
+  .container { width: min(100% - 3rem, var(--container-max)); }
+}
+@media (max-width: 768px) {
+  .container { width: min(100% - 1.5rem, var(--container-max)); }
 }

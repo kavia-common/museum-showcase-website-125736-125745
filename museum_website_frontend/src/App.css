@@ -1,36 +1,21 @@
-/* CSS Variables for Theme Management */
-:root {
-  /* Light theme colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #282c34;
-  --text-secondary: #61dafb;
-  --border-color: #e9ecef;
-  --button-bg: #007bff;
-  --button-text: #ffffff;
-}
+ /* 
+  App.css
+  - Component styles using global tokens from index.css
+  - Navbar, Hero, Section, Card, Theme toggle
+  - Responsive adjustments and accessibility in focus states
+*/
 
-[data-theme="dark"] {
-  /* Dark theme colors */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #282c34;
-  --text-primary: #ffffff;
-  --text-secondary: #61dafb;
-  --border-color: #404040;
-  --button-bg: #0056b3;
-  --button-text: #ffffff;
-}
-
+/* Root app wrapper */
 .App {
-  text-align: center;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
   min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Optional CRA logo animation support (kept for compatibility) */
 .App-logo {
-  height: 40vmin;
+  height: clamp(10rem, 20vw, 40vmin);
   pointer-events: none;
 }
 
@@ -40,65 +25,293 @@
   }
 }
 
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Header container (used by template App) */
 .App-header {
-  background-color: var(--bg-secondary);
+  background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-primary) 8%, transparent),
+      transparent 60%
+    ),
+    var(--surface);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  display: grid;
+  place-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
 }
 
-.App-link {
-  color: var(--text-secondary);
-  transition: color 0.3s ease;
-}
-
+/* Theme toggle button (works with existing App.js) */
 .theme-toggle {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 50;
+
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .9rem;
+
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--elevated);
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
 }
 
 .theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .theme-toggle:active {
   transform: translateY(0);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Link style used by CRA template */
+.App-link {
+  color: var(--link);
+  text-decoration: none;
+  font-weight: 600;
+}
+.App-link:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  background-color: var(--navbar-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar .navbar-inner {
+  width: min(100% - 2rem, var(--container-max));
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: .85rem 0;
+}
+
+.navbar .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.navbar .brand .dot {
+  display: inline-block;
+  width: .75rem;
+  height: .75rem;
+  background: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 25%, transparent);
+}
+
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(.5rem, 2vw, 1.25rem);
+}
+
+.navbar .nav-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  padding: .4rem .6rem;
+  border-radius: var(--radius-sm);
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--link-hover);
+  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+}
+
+.navbar .nav-cta {
+  margin-left: .25rem;
+}
+
+/* Hero section */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+
+  padding: clamp(3rem, 8vw, 7rem) 0;
+  background:
+    radial-gradient(80rem 50rem at 10% -10%, color-mix(in oklab, var(--color-accent) 12%, transparent), transparent),
+    radial-gradient(60rem 40rem at 90% 10%, color-mix(in oklab, var(--color-primary) 15%, transparent), transparent),
+    var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero .container {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.hero .eyebrow {
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  margin-bottom: .5rem;
+}
+
+.hero .title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  font-weight: 900;
+  margin: 0 0 .75rem;
+}
+
+.hero .subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-muted);
+  margin: 0 0 1.25rem;
+}
+
+.hero .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .5rem;
+}
+
+.hero .media {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--color-secondary) 12%, transparent), transparent),
+    var(--elevated);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* Generic section */
+.section {
+  padding: clamp(2.5rem, 6vw, 4rem) 0;
+  background: var(--bg);
+}
+
+.section--alt {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.card {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in oklab, var(--color-primary) 20%, var(--border));
+}
+
+.card:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 35%, transparent), var(--shadow-md);
+}
+
+.card-media {
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-accent) 15%, transparent),
+    transparent 70%
+  );
+}
+
+.card-content {
+  padding: 1rem 1rem 1.1rem;
+}
+
+.card-title {
+  margin: 0 0 .35rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.card-meta {
+  font-size: .9rem;
+  color: var(--text-muted);
+}
+
+/* Footer */
+.footer {
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: .95rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+  .navbar .navbar-inner {
+    padding-block: .7rem;
   }
-  to {
-    transform: rotate(360deg);
+  .hero .container {
+    grid-template-columns: 1fr;
+  }
+  .theme-toggle {
+    top: var(--space-2);
+    right: var(--space-2);
+    padding: .5rem .7rem;
+    font-size: .9rem;
   }
 }
 
-/* Responsive design for mobile */
-@media (max-width: 768px) {
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+@media (max-width: 640px) {
+  .navbar .nav-links {
+    gap: .5rem;
+  }
+  .navbar .nav-link {
+    padding: .35rem .5rem;
+  }
+  .cards {
+    grid-template-columns: 1fr;
   }
 }
